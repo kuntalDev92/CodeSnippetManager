@@ -1,6 +1,6 @@
 # 📝 Code Snippet Manager
 
-A production-ready, feature-rich **Code Snippet Manager** built with **Core PHP (OOP)**, **MySQL**, **Bootstrap 5**, and **AJAX**. Store, organize, search, and share frequently used code snippets with your team.
+A modern, full-featured **Code Snippet Manager** designed for developers and teams who value efficiency. Built with **Core PHP (OOP)**, **MySQL**, **Bootstrap 5**, and **AJAX** — it provides a centralized workspace to store, organize, search, and collaborate on reusable code across projects.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4.svg)
