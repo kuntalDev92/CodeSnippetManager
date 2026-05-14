@@ -1,0 +1,495 @@
+/**
+ * ============================================================================
+ * Code Snippet Manager - Custom Styles
+ * ============================================================================
+ * 
+ * Custom CSS styles that complement Bootstrap 5.
+ * Fully responsive for all devices.
+ * 
+ * @package  CodeSnippetManager
+ * @author   Developer
+ * @version  1.0.0
+ */
+
+/* ============================================================================
+   CSS Custom Properties
+   ============================================================================ */
+:root {
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    --transition-base: all 0.2s ease-in-out;
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-card-hover: 0 8px 25px rgba(0, 0, 0, 0.25);
+    --border-radius-lg: 12px;
+    --border-radius-md: 8px;
+    --border-radius-sm: 6px;
+}
+
+/* ============================================================================
+   Base Styles
+   ============================================================================ */
+body {
+    font-family: var(--font-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.8); }
+
+/* ============================================================================
+   Navigation
+   ============================================================================ */
+.navbar {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 0.4rem 0;
+    min-height: 52px;
+}
+.navbar-brand {
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    margin-right: 0.5rem !important;
+    padding: 0;
+}
+.navbar .btn-sm {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+}
+.navbar .btn-dark {
+    background: transparent;
+    border: none;
+}
+.navbar .btn-dark:hover {
+    background: rgba(255,255,255,0.08);
+}
+.navbar .dropdown-toggle::after {
+    vertical-align: 0.15em;
+    margin-left: 0.3em;
+}
+/* Dropdown header styling */
+.navbar .dropdown-header {
+    line-height: 1.4;
+}
+
+/* ============================================================================
+   Search Dropdown
+   ============================================================================ */
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+    box-shadow: var(--shadow-card-hover);
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+}
+.search-dropdown .list-group-item:hover {
+    background: rgba(99, 102, 241, 0.1) !important;
+}
+.input-group { position: relative; }
+
+/* ============================================================================
+   Snippet Card
+   ============================================================================ */
+.snippet-card {
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--border-radius-lg);
+    transition: var(--transition-base);
+    overflow: hidden;
+    background: var(--bs-body-bg);
+}
+.snippet-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+.snippet-card .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--bs-border-color);
+    padding: 1rem 1.25rem;
+}
+.snippet-card .card-body { padding: 0; }
+.snippet-card .card-footer {
+    background: transparent;
+    border-top: 1px solid var(--bs-border-color);
+    padding: 0.75rem 1.25rem;
+}
+
+/* Code preview */
+.code-preview {
+    max-height: 200px;
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    border-radius: 0;
+}
+.code-preview::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(transparent, var(--bs-body-bg));
+    pointer-events: none;
+}
+.code-preview code {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+
+/* ============================================================================
+   Full Code View
+   ============================================================================ */
+.code-container {
+    position: relative;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+.code-container pre {
+    margin: 0;
+    padding: 1.25rem;
+    border-radius: var(--border-radius-md);
+    max-height: 600px;
+    overflow: auto;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+.code-container code {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+.code-container .copy-btn {
+    position: absolute;
+    top: 0.75rem; right: 0.75rem;
+    z-index: 10;
+    opacity: 0;
+    transition: var(--transition-base);
+}
+.code-container:hover .copy-btn { opacity: 1; }
+
+/* ============================================================================
+   Language Badge
+   ============================================================================ */
+.language-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.language-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* ============================================================================
+   Tag Styles
+   ============================================================================ */
+.tag-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-base);
+    border: 1px solid;
+    white-space: nowrap;
+}
+.tag-badge:hover { opacity: 0.8; transform: scale(1.05); }
+
+/* ============================================================================
+   Avatar
+   ============================================================================ */
+.avatar-sm { width: 32px; height: 32px; font-size: 0.8rem; flex-shrink: 0; }
+.avatar-md { width: 48px; height: 48px; font-size: 1.2rem; flex-shrink: 0; }
+.avatar-lg { width: 80px; height: 80px; font-size: 2rem; flex-shrink: 0; }
+
+/* ============================================================================
+   Dashboard Stats
+   ============================================================================ */
+.stat-card {
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--bs-border-color);
+    padding: 1.25rem;
+    transition: var(--transition-base);
+    background: var(--bs-body-bg);
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+}
+.stat-card .stat-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+.stat-card .stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+.stat-card .stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+}
+
+/* ============================================================================
+   Sidebar / Filter Panel
+   ============================================================================ */
+.filter-sidebar { position: sticky; top: 90px; }
+.filter-sidebar .list-group-item {
+    border: none;
+    border-radius: var(--border-radius-sm) !important;
+    margin-bottom: 2px;
+    transition: var(--transition-base);
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+}
+.filter-sidebar .list-group-item:hover,
+.filter-sidebar .list-group-item.active {
+    background: rgba(99, 102, 241, 0.15);
+}
+.filter-sidebar .list-group-item.active {
+    border-left: 3px solid var(--bs-primary);
+}
+
+/* ============================================================================
+   Empty State
+   ============================================================================ */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    opacity: 0.7;
+}
+.empty-state i {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.4;
+}
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+.snippet-card:nth-child(1) { animation-delay: 0.05s; }
+.snippet-card:nth-child(2) { animation-delay: 0.1s; }
+.snippet-card:nth-child(3) { animation-delay: 0.15s; }
+.snippet-card:nth-child(4) { animation-delay: 0.2s; }
+
+/* ============================================================================
+   Code Editor
+   ============================================================================ */
+.code-editor {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    tab-size: 4;
+    resize: vertical;
+    min-height: 250px;
+    border-radius: var(--border-radius-md);
+}
+.code-editor:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* ============================================================================
+   Auth Pages
+   ============================================================================ */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+}
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+.auth-card .card-header {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* ============================================================================
+   Activity Timeline
+   ============================================================================ */
+.activity-timeline .activity-item {
+    position: relative;
+    padding-left: 2rem;
+    padding-bottom: 1.5rem;
+    border-left: 2px solid var(--bs-border-color);
+}
+.activity-timeline .activity-item::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: 6px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--bs-primary);
+}
+.activity-timeline .activity-item:last-child {
+    border-left-color: transparent;
+}
+
+/* ============================================================================
+   Admin Panel
+   ============================================================================ */
+.admin-badge {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+}
+.user-row {
+    transition: var(--transition-base);
+}
+.user-row:hover {
+    background: rgba(99, 102, 241, 0.05) !important;
+}
+
+/* ============================================================================
+   RESPONSIVE — Tablets (≤992px)
+   ============================================================================ */
+@media (max-width: 992px) {
+    .filter-sidebar {
+        position: static;
+        margin-bottom: 1.5rem;
+    }
+    .stat-card .stat-value { font-size: 1.5rem; }
+    .stat-card { padding: 1rem; }
+}
+
+/* ============================================================================
+   RESPONSIVE — Mobile (≤768px)
+   ============================================================================ */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* Stats */
+    .stat-card .stat-value { font-size: 1.3rem; }
+    .stat-card .stat-label { font-size: 0.7rem; }
+    .stat-card .stat-icon { width: 36px; height: 36px; font-size: 1rem; }
+    .stat-card { padding: 0.85rem; }
+
+    /* Code */
+    .code-preview { max-height: 120px; }
+    .code-container pre { max-height: 350px; padding: 0.75rem; }
+    .code-container pre, .code-preview code { font-size: 0.75rem; }
+
+    /* Cards */
+    .snippet-card .card-header { padding: 0.7rem 0.85rem; }
+    .snippet-card .card-footer { padding: 0.5rem 0.85rem; }
+    .snippet-card:hover { transform: none; box-shadow: none; }
+
+    /* Tables */
+    .table { font-size: 0.8rem; }
+    .table th, .table td { padding: 0.4rem 0.5rem; }
+
+    /* Modals */
+    .modal-dialog { margin: 0.5rem; max-width: calc(100% - 1rem); }
+
+    /* Auth */
+    .auth-card { max-width: 100%; }
+    .auth-card .card-header { padding: 1.25rem 1rem; }
+
+    /* Footer center on mobile */
+    footer .row > div { text-align: center !important; margin-bottom: 0.25rem; }
+
+    /* Allow wrapping */
+    .d-flex.gap-2, .d-flex.gap-3 { flex-wrap: wrap; }
+
+    /* Profile */
+    .avatar-lg { width: 56px; height: 56px; font-size: 1.4rem; }
+
+    /* Headings */
+    h2 { font-size: 1.4rem; }
+    h3 { font-size: 1.25rem; }
+    h4 { font-size: 1.1rem; }
+    h5 { font-size: 1rem; }
+
+    /* Buttons */
+    .btn-lg { padding: 0.45rem 0.9rem; font-size: 0.88rem; }
+}
+
+/* ============================================================================
+   RESPONSIVE — Small phones (≤480px)
+   ============================================================================ */
+@media (max-width: 480px) {
+    h2 { font-size: 1.2rem; }
+    h3 { font-size: 1.1rem; }
+    h4 { font-size: 1rem; }
+
+    .stat-card .stat-value { font-size: 1.1rem; }
+
+    .tag-badge { font-size: 0.65rem; padding: 2px 7px; }
+    .language-badge { font-size: 0.6rem; padding: 2px 6px; }
+
+    .btn { font-size: 0.82rem; }
+    .btn-lg { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+
+    .card-body { padding: 0.75rem; }
+    .card-header { padding: 0.6rem 0.75rem; }
+
+    .badge { font-size: 0.65rem; }
+}
+
+/* ============================================================================
+   Print Styles
+   ============================================================================ */
+@media print {
+    .navbar, .filter-sidebar, .toast-container, footer { display: none !important; }
+    .snippet-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+}
