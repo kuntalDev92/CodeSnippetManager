@@ -133,16 +133,12 @@ The `database.sql` file contains **everything** — tables, users, categories, t
 
 #### Step 1 — Import database.sql
 
-**Recommended method: phpMyAdmin (no command line needed)**
-
 1. Open **phpMyAdmin** from your XAMPP/WAMP/MAMP control panel
 2. Click **Import** from the top menu
 3. Click **Choose File** and select `database.sql`
 4. Click **Go**
 5. Wait for the success message
 6. Done — database, tables, users, categories, tags, and sample snippets are created ✅
-
-> 💡 **Why this method?** On many Windows/XAMPP setups, the `mysql` command is not available globally in CMD/PowerShell unless MySQL's `bin` folder is added to PATH. To keep setup simple and plug-and-play, this guide uses **phpMyAdmin import only**.
 
 #### Step 2 — Fix Password Hashes
 
@@ -165,19 +161,7 @@ http://localhost/snippet-manager/install.php
 - It detects existing users and automatically fixes their password hashes
 - Delete `install.php` after ✅
 
-**Option C — PHP command line:**
-```bash
-php -r "echo 'admin123: ' . password_hash('admin123', PASSWORD_BCRYPT, ['cost'=>12]) . PHP_EOL;"
-php -r "echo 'demo123: ' . password_hash('demo123', PASSWORD_BCRYPT, ['cost'=>12]) . PHP_EOL;"
-```
-Copy the output hashes and run in phpMyAdmin:
-```sql
-UPDATE users SET password = 'PASTE_ADMIN_HASH' WHERE username = 'admin';
-UPDATE users SET password = 'PASTE_DEMO_HASH' WHERE username = 'demo';
-```
-These are `UPDATE` queries because `database.sql` already inserts both users during import.
 
-> **Why this step?** MySQL cannot generate bcrypt hashes. PHP must do it. Every bcrypt hash is unique — even for the same password — so it must be generated fresh on your server.
 
 #### Step 3 — Configure
 
