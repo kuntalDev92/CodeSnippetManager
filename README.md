@@ -142,8 +142,16 @@ The `database.sql` file contains **everything** — tables, users, categories, t
 
 **Using command line:**
 ```bash
+# Linux / Mac / Git Bash:
 mysql -u root -p < database.sql
+
+# Windows PowerShell:
+Get-Content database.sql | mysql -u root -p
+
+# Windows CMD (Command Prompt):
+mysql -u root -p -e "source database.sql"
 ```
+> 💡 **Tip:** On Windows, using **phpMyAdmin Import** is the easiest option — no command line needed.
 
 #### Step 2 — Fix Password Hashes
 
@@ -153,9 +161,10 @@ The users are created but passwords need PHP to hash them. Pick **any one** opti
 ```
 http://localhost/snippet-manager/generate_hash.php
 ```
-- It shows ready-to-run SQL with correct password hashes
+- It shows ready-to-run **UPDATE SQL** with correct password hashes
 - Click **Copy SQL** button
 - Go to phpMyAdmin → `snippet_manager` database → **SQL** tab → Paste → **Go**
+- This updates the already imported `admin` and `demo` users
 - Delete `generate_hash.php` after ✅
 
 **Option B — Open `install.php` in browser:**
@@ -175,6 +184,7 @@ Copy the output hashes and run in phpMyAdmin:
 UPDATE users SET password = 'PASTE_ADMIN_HASH' WHERE username = 'admin';
 UPDATE users SET password = 'PASTE_DEMO_HASH' WHERE username = 'demo';
 ```
+These are `UPDATE` queries because `database.sql` already inserts both users during import.
 
 > **Why this step?** MySQL cannot generate bcrypt hashes. PHP must do it. Every bcrypt hash is unique — even for the same password — so it must be generated fresh on your server.
 

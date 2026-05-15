@@ -34,7 +34,7 @@ $demoHash  = password_hash($demoPass, PASSWORD_BCRYPT, ['cost' => 12]);
     <div class="card bg-dark border-secondary" style="max-width:800px; width:100%; border-radius:12px;">
         <div class="card-header text-center border-secondary" style="background: rgba(99,102,241,0.1); padding:1.5rem;">
             <h3 class="fw-bold mb-1">🔐 Password Hash Generator</h3>
-            <p class="text-muted mb-0 small">Copy the SQL below and run it in phpMyAdmin</p>
+            <p class="text-muted mb-0 small">Copy the UPDATE SQL below and run it in phpMyAdmin after importing database.sql</p>
         </div>
         <div class="card-body p-4">
             <h6 class="fw-bold mb-2">Generated Hashes:</h6>
@@ -54,11 +54,10 @@ $demoHash  = password_hash($demoPass, PASSWORD_BCRYPT, ['cost' => 12]);
                 </tbody>
             </table>
 
-            <h6 class="fw-bold mb-2">Ready-to-run SQL:</h6>
+            <h6 class="fw-bold mb-2">Ready-to-run SQL (for imported users):</h6>
             <div class="bg-black rounded p-3 mb-3" style="border:1px solid rgba(99,102,241,0.2);">
-                <pre class="text-success mb-0" style="white-space:pre-wrap; font-size:0.8rem;" id="sqlOutput">INSERT INTO `users` (`username`, `email`, `password`, `full_name`, `role`) VALUES
-('admin', 'admin@snippetmanager.com', '<?php echo $adminHash; ?>', 'Administrator', 'admin'),
-('demo', 'demo@snippetmanager.com', '<?php echo $demoHash; ?>', 'Demo User', 'member');</pre>
+                <pre class="text-success mb-0" style="white-space:pre-wrap; font-size:0.8rem;" id="sqlOutput">UPDATE `users` SET `password` = '<?php echo $adminHash; ?>' WHERE `username` = 'admin';
+UPDATE `users` SET `password` = '<?php echo $demoHash; ?>' WHERE `username` = 'demo';</pre>
             </div>
             <button class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('sqlOutput').textContent); this.innerHTML='<i class=\'bi bi-check-lg me-1\'></i>Copied!'; this.classList.add('btn-success'); this.classList.remove('btn-primary');">
                 <i class="bi bi-clipboard me-1"></i>Copy SQL
