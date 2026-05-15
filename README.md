@@ -156,6 +156,193 @@ snippet-manager/
    http://localhost/snippet-manager/login.php
    ```
 
+### Manual Installation (Step-by-Step)
+
+If you prefer to set things up manually instead of using `install.php`, follow these steps carefully:
+
+---
+
+#### Step 1 — Create the Database
+
+Open **phpMyAdmin** (or MySQL CLI) and run:
+
+```sql
+CREATE DATABASE snippet_manager CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+---
+
+#### Step 2 — Import Tables
+
+Import the `database.sql` file which creates all 9 tables:
+
+**Option A — phpMyAdmin:**
+1. Open phpMyAdmin → Click on `snippet_manager` database
+2. Go to **Import** tab
+3. Click **Choose File** → select `database.sql`
+4. Click **Go**
+
+**Option B — Command line:**
+```bash
+mysql -u root -p snippet_manager < database.sql
+```
+
+---
+
+#### Step 3 — Generate a Password Hash
+
+This is important! MySQL cannot hash passwords using bcrypt. You must use PHP to generate the hash first.
+
+**Option A — Run this in your terminal:**
+```bash
+php -r "echo password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);"
+```
+
+**Option B — Create a temporary PHP file** called `hash.php`:
+```php
+<?php
+// Open this file in browser to see the hash
+echo password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
+?>
+```
+Open `http://localhost/hash.php` in your browser → copy the entire output.
+
+The output will look something like this (yours will be different):
+```
+$2y$12$LJ3m4ks9Fnh.VgO1hR8pMeXz7QZy5YvrKBwUn0cEQ7gTJpGXa6Yfa
+```
+
+> ⚠️ **Delete `hash.php` after use!** Never leave it on your server.
+
+---
+
+#### Step 4 — Create Admin User
+
+Run this SQL in phpMyAdmin (SQL tab) — **replace the hash** with the one you generated above:
+
+```sql
+INSERT INTO users (username, email, password, full_name, role) VALUES (
+    'admin',
+    'admin@example.com',
+    '$2y$12$PASTE_YOUR_HASH_FROM_STEP_3_HERE',
+    'Administrator',
+    'admin'
+);
+```
+
+**Example with a real hash:**
+```sql
+INSERT INTO users (username, email, password, full_name, role) VALUES (
+    'admin',
+    'admin@example.com',
+    '$2y$12$LJ3m4ks9Fnh.VgO1hR8pMeXz7QZy5YvrKBwUn0cEQ7gTJpGXa6Yfa',
+    'Administrator',
+    'admin'
+);
+```
+
+> The `password` column stores the **bcrypt hash**, not the plain text password. You will login using the plain text password (`admin123` in this example).
+
+---
+
+#### Step 5 — (Optional) Create a Demo Member User
+
+To test the member role, create a second user. Generate a hash for `member123` the same way as Step 3, then:
+
+```sql
+INSERT INTO users (username, email, password, full_name, role) VALUES (
+    'demo',
+    'demo@example.com',
+    '$2y$12$PASTE_HASH_FOR_member123_HERE',
+    'Demo User',
+    'member'
+);
+```
+
+---
+
+#### Step 6 — Insert Default Categories
+
+```sql
+INSERT INTO categories (name, slug, description, color, sort_order, created_by) VALUES
+('Database', 'database', 'MySQL, PDO, and database-related snippets', '#ef4444', 1, 1),
+('Authentication', 'authentication', 'Login, registration, and auth snippets', '#f97316', 2, 1),
+('File Handling', 'file-handling', 'File upload, download, and manipulation', '#eab308', 3, 1),
+('API', 'api', 'REST API and cURL related snippets', '#22c55e', 4, 1),
+('String Manipulation', 'string-manipulation', 'String processing and formatting', '#3b82f6', 5, 1),
+('Array Operations', 'array-operations', 'Array sorting, filtering, and manipulation', '#8b5cf6', 6, 1),
+('Email', 'email', 'Email sending and template snippets', '#ec4899', 7, 1),
+('Security', 'security', 'Encryption, sanitization, and security', '#14b8a6', 8, 1),
+('Utilities', 'utilities', 'Helper functions and utilities', '#6366f1', 9, 1),
+('OOP Patterns', 'oop-patterns', 'Design patterns and OOP concepts', '#a855f7', 10, 1);
+```
+
+---
+
+#### Step 7 — Insert Default Tags
+
+```sql
+INSERT INTO tags (name, slug, color) VALUES
+('php', 'php', '#777BB4'),
+('mysql', 'mysql', '#4479A1'),
+('pdo', 'pdo', '#336791'),
+('security', 'security', '#DC2626'),
+('helper', 'helper', '#059669'),
+('crud', 'crud', '#D97706'),
+('ajax', 'ajax', '#2563EB'),
+('oop', 'oop', '#7C3AED'),
+('api', 'api', '#0891B2'),
+('validation', 'validation', '#E11D48');
+```
+
+---
+
+#### Step 8 — Configure the Application
+
+**Edit `config/database.php`** — update these values to match your setup:
+```php
+'host'     => 'localhost',        // your database host
+'port'     => 3306,               // your database port
+'dbname'   => 'snippet_manager',  // database name from Step 1
+'username' => 'root',             // your MySQL username
+'password' => '',                 // your MySQL password
+```
+
+**Edit `config/app.php`** — set your timezone:
+```php
+define('APP_TIMEZONE', 'Asia/Kolkata');  // Change to your timezone
+```
+Full list of timezones: [php.net/timezones](https://www.php.net/manual/en/timezones.php)
+
+---
+
+#### Step 9 — Create Uploads Directory
+
+```bash
+mkdir uploads
+chmod 755 uploads
+```
+
+On Windows (XAMPP), just create an `uploads` folder inside `snippet-manager/`.
+
+---
+
+#### Step 10 — Login and Start Using
+
+Open your browser:
+```
+http://localhost/snippet-manager/login.php
+```
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | `admin` | `admin123` (or whatever you set in Step 3) |
+| Member | `demo` | `member123` (if you did Step 5) |
+
+---
+
+> 💡 **Tip:** The web installer (`install.php`) does all of Steps 1–9 automatically with a simple GUI form. Manual installation is recommended only if you need full control or your hosting restricts browser-based setup.
+
 ### Going to Production
 
 1. Set `APP_DEBUG` to `false` in `config/app.php`

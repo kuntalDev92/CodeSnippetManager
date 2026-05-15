@@ -291,7 +291,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $messages[] = ['success', '✅ 10 default tags inserted.'];
         }
 
-        // Step 7: Create uploads directory
+        // Step 7: Insert sample snippets for admin
+        $snippetCheck = $pdo->query("SELECT COUNT(*) FROM snippets")->fetchColumn();
+        if ($snippetCheck == 0) {
+            // Sample snippet 1: PDO Connection
+            $pdo->exec("
+                INSERT INTO snippets (title, slug, description, code, language, category_id, user_id, is_public, version) VALUES
+                ('PDO Database Connection', 'pdo-database-connection', 'Secure PDO database connection with error handling and UTF-8 support.', '<?php\nclass Database {\n    private static ?PDO \$conn = null;\n\n    public static function connect(): PDO {\n        if (self::\$conn === null) {\n            \$dsn = \"mysql:host=localhost;dbname=mydb;charset=utf8mb4\";\n            self::\$conn = new PDO(\$dsn, \"root\", \"\", [\n                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,\n            ]);\n        }\n        return self::\$conn;\n    }\n}\n\n\$db = Database::connect();\n\$stmt = \$db->prepare(\"SELECT * FROM users WHERE id = ?\");\n\$stmt->execute([1]);\n\$user = \$stmt->fetch();\n?>', 'php', 1, 1, 1, 1)
+            ");
+
+            // Sample snippet 2: File Upload
+            $pdo->exec("
+                INSERT INTO snippets (title, slug, description, code, language, category_id, user_id, is_public, version) VALUES
+                ('Secure File Upload', 'secure-file-upload', 'Handle file uploads with type validation and unique naming.', '<?php\nfunction uploadFile(array \$file, string \$dir = \"uploads/\"): ?string {\n    \$allowed = [\"image/jpeg\", \"image/png\", \"image/gif\", \"application/pdf\"];\n    \n    if (\$file[\"error\"] !== UPLOAD_ERR_OK) return null;\n    if (\$file[\"size\"] > 5 * 1024 * 1024) return null;\n    \n    \$finfo = new finfo(FILEINFO_MIME_TYPE);\n    if (!in_array(\$finfo->file(\$file[\"tmp_name\"]), \$allowed)) return null;\n    \n    \$ext = pathinfo(\$file[\"name\"], PATHINFO_EXTENSION);\n    \$name = bin2hex(random_bytes(16)) . \".\" . \$ext;\n    \n    if (!is_dir(\$dir)) mkdir(\$dir, 0755, true);\n    move_uploaded_file(\$file[\"tmp_name\"], \$dir . \$name);\n    \n    return \$name;\n}\n?>', 'php', 3, 1, 1, 1)
+            ");
+
+            // Sample snippet 3: API Response Helper
+            $pdo->exec("
+                INSERT INTO snippets (title, slug, description, code, language, category_id, user_id, is_public, version) VALUES
+                ('JSON API Response Helper', 'json-api-response', 'Standardized JSON response function for REST APIs.', '<?php\nfunction apiResponse(mixed \$data = null, string \$message = \"Success\", int \$code = 200): void {\n    http_response_code(\$code);\n    header(\"Content-Type: application/json; charset=utf-8\");\n    \n    echo json_encode([\n        \"success\" => \$code >= 200 && \$code < 300,\n        \"message\" => \$message,\n        \"data\"    => \$data,\n        \"code\"    => \$code,\n    ], JSON_UNESCAPED_UNICODE);\n    \n    exit;\n}\n\n// Usage:\napiResponse([\"user\" => \$user], \"User found\", 200);\napiResponse(null, \"Not found\", 404);\n?>', 'php', 4, 1, 1, 1)
+            ");
+
+            // Link snippets to tags
+            $pdo->exec("INSERT INTO snippet_tags (snippet_id, tag_id) VALUES (1,1),(1,2),(1,3),(2,1),(2,4),(3,1),(3,9)");
+
+            // Save initial versions
+            $pdo->exec("
+                INSERT INTO snippet_versions (snippet_id, code, version, change_note, created_by) 
+                SELECT id, code, 1, 'Initial version', user_id FROM snippets
+            ");
+
+            $messages[] = ['success', '✅ 3 sample snippets with tags inserted.'];
+        }
+
+        // Step 8: Create a demo member user (password: member123)
+        $memberCheck = $pdo->prepare("SELECT id FROM users WHERE username = 'demo'");
+        $memberCheck->execute();
+        if (!$memberCheck->fetch()) {
+            $memberHash = password_hash('member123', PASSWORD_BCRYPT, ['cost' => 12]);
+            $pdo->prepare("INSERT INTO users (username, email, password, full_name, role) VALUES (?, ?, ?, ?, 'member')")
+                ->execute(['demo', 'demo@snippetmanager.com', $memberHash, 'Demo User']);
+            $messages[] = ['success', '✅ Demo member user created (demo / member123).'];
+        }
+
+        // Step 9: Create uploads directory
         $uploadsDir = __DIR__ . '/uploads';
         if (!is_dir($uploadsDir)) {
             mkdir($uploadsDir, 0755, true);
@@ -357,10 +400,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </ul>
                         </div>
 
-                        <div class="mt-4">
-                            <p class="fw-semibold">Login Credentials:</p>
-                            <p>Username: <code><?= htmlspecialchars($adminConfig['username']) ?></code></p>
-                            <p>Password: <code><?= htmlspecialchars($adminConfig['password']) ?></code></p>
+                        <div class="mt-4 text-start">
+                            <p class="fw-semibold text-center mb-3">Login Credentials:</p>
+                            <table class="table table-dark table-sm table-bordered">
+                                <thead><tr><th>Role</th><th>Username</th><th>Password</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-primary">Admin</span></td>
+                                        <td><code><?= htmlspecialchars($adminConfig['username']) ?></code></td>
+                                        <td><code><?= htmlspecialchars($adminConfig['password']) ?></code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-secondary">Member</span></td>
+                                        <td><code>demo</code></td>
+                                        <td><code>member123</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-info mt-3 text-start small">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Sample data included:</strong> 10 categories, 10 tags, 3 sample snippets, and a demo member account are pre-loaded so you can explore all features immediately.
                         </div>
 
                         <a href="login.php" class="btn btn-primary btn-lg mt-3">
