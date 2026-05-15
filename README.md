@@ -133,25 +133,16 @@ The `database.sql` file contains **everything** — tables, users, categories, t
 
 #### Step 1 — Import database.sql
 
-**Using phpMyAdmin:**
-1. Open phpMyAdmin
-2. Click **Import** (top menu)
-3. Click **Choose File** → select `database.sql`
+**Recommended method: phpMyAdmin (no command line needed)**
+
+1. Open **phpMyAdmin** from your XAMPP/WAMP/MAMP control panel
+2. Click **Import** from the top menu
+3. Click **Choose File** and select `database.sql`
 4. Click **Go**
-5. Done — database, tables, and all data created ✅
+5. Wait for the success message
+6. Done — database, tables, users, categories, tags, and sample snippets are created ✅
 
-**Using command line:**
-```bash
-# Linux / Mac / Git Bash:
-mysql -u root -p < database.sql
-
-# Windows PowerShell:
-Get-Content database.sql | mysql -u root -p
-
-# Windows CMD (Command Prompt):
-mysql -u root -p -e "source database.sql"
-```
-> 💡 **Tip:** On Windows, using **phpMyAdmin Import** is the easiest option — no command line needed.
+> 💡 **Why this method?** On many Windows/XAMPP setups, the `mysql` command is not available globally in CMD/PowerShell unless MySQL's `bin` folder is added to PATH. To keep setup simple and plug-and-play, this guide uses **phpMyAdmin import only**.
 
 #### Step 2 — Fix Password Hashes
 
