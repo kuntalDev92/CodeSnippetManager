@@ -32,14 +32,6 @@ A modern, full-featured **Code Snippet Manager** designed for developers and tea
 - ✅ **Profile Management** — Update profile & change password
 - ✅ **Session Security** — CSRF, httponly cookies, session regeneration
 
-### Admin Panel Features
-- ✅ **System Dashboard** — Total users, snippets, categories, tags, shares
-- ✅ **User Management** — View all users with stats
-- ✅ **Activate / Deactivate** — Enable or disable user accounts
-- ✅ **Role Management** — Promote members to admin or demote
-- ✅ **Activity Log** — System-wide audit trail (all users)
-- ✅ **Admin Badge** — Visual indicator in navbar
-
 ### Admin vs Member
 
 | Feature | Admin | Member |
@@ -55,24 +47,6 @@ A modern, full-featured **Code Snippet Manager** designed for developers and tea
 | **Change user roles** | ✅ | ❌ |
 | **View system-wide activity log** | ✅ | ❌ |
 
-### UI/UX
-- ✅ **Fully Responsive** — Works on desktop, tablet, and mobile
-- ✅ **Dark Theme** — Professional dark interface
-- ✅ **AJAX Powered** — Smooth, no-reload interactions
-- ✅ **Toast Notifications** — Non-intrusive feedback
-- ✅ **Keyboard Shortcuts** — Ctrl+K for quick search
-- ✅ **Dashboard** — Stats, charts, activity timeline
-- ✅ **Pagination** — Efficient paginated browsing
-
-### Technical
-- ✅ **OOP Architecture** — Singleton, clean class structure
-- ✅ **PDO Prepared Statements** — SQL injection prevention
-- ✅ **CSRF Protection** — Token-based validation
-- ✅ **XSS Prevention** — Output escaping throughout
-- ✅ **Auto-detect URL** — Plug-and-play installation
-- ✅ **Activity Logging** — Audit trail for all actions
-- ✅ **Timezone Sync** — PHP & MySQL timezone alignment
-
 ---
 
 ## 📁 Project Structure
@@ -85,40 +59,35 @@ snippet-manager/
 ├── classes/
 │   ├── Session.php          # Session & CSRF management
 │   ├── Auth.php             # Login, register, logout, roles
-│   ├── User.php             # User model (CRUD, search, stats)
+│   ├── User.php             # User model
 │   ├── Snippet.php          # Snippet model (CRUD, versions, clone)
-│   ├── Category.php         # Category model (user-filtered counts)
-│   ├── Tag.php              # Tag model (user-filtered counts)
+│   ├── Category.php         # Category model
+│   ├── Tag.php              # Tag model
 │   ├── Favorite.php         # Favorites toggle
-│   ├── Share.php            # Team sharing with permissions
+│   ├── Share.php            # Team sharing
 │   └── ActivityLog.php      # Audit trail
-├── helpers/
-│   └── functions.php        # Utility functions
+├── helpers/functions.php    # Utility functions
 ├── includes/
-│   ├── header.php           # Navbar, search, admin badge
-│   └── footer.php           # Scripts, config injection
-├── ajax/
-│   └── handler.php          # 40+ AJAX action handlers
+│   ├── header.php           # Navbar, search
+│   └── footer.php           # Scripts, JS config
+├── ajax/handler.php         # 40+ AJAX action handlers
 ├── assets/
 │   ├── css/style.css        # Responsive styles
 │   └── js/app.js            # AJAX, copy, search, forms
 ├── uploads/                 # User uploads
-├── index.php                # Snippet listing with filters
-├── login.php                # Login page
-├── register.php             # Registration page
-├── create.php               # Create snippet
-├── edit.php                 # Edit snippet
-├── view.php                 # View snippet (full code)
+├── index.php                # Snippet listing
+├── login.php / register.php # Authentication
+├── create.php / edit.php    # Snippet forms
+├── view.php                 # Snippet detail view
 ├── dashboard.php            # User dashboard
 ├── categories.php           # Category management
 ├── tags.php                 # Tag management
-├── favorites.php            # Favorites redirect
 ├── shared.php               # Shared with me
 ├── profile.php              # Profile & password
-├── admin.php                # ⭐ Admin panel (users, stats, logs)
-├── logout.php               # Logout handler
-├── install.php              # ⭐ Web installer
-├── database.sql             # Schema (tables only)
+├── admin.php                # Admin panel
+├── install.php              # Web installer
+├── generate_hash.php        # Password hash helper
+├── database.sql             # Complete database with all data
 ├── .htaccess                # Security & caching
 └── README.md
 ```
@@ -128,230 +97,134 @@ snippet-manager/
 ## ⚡ Installation
 
 ### Requirements
-- **PHP 8.1+** with PDO MySQL
+- **PHP 8.1+** with PDO MySQL extension
 - **MySQL 5.7+** or MariaDB 10.3+
 - **Apache** with mod_rewrite (or Nginx)
 
-### Quick Start
+---
 
-1. **Extract** to your web server:
-   ```bash
-   # XAMPP: C:/xampp/htdocs/snippet-manager/
-   # WAMP: C:/wamp64/www/snippet-manager/
-   # Linux: /var/www/html/snippet-manager/
-   ```
+### Method 1 — Auto Install (Recommended)
 
-2. **Run the web installer:**
-   ```
-   http://localhost/snippet-manager/install.php
-   ```
-   The installer creates the database, tables, admin user, and default data.
+1. **Copy files** to your web server (`htdocs/snippet-manager/`)
+2. **Open** `http://localhost/snippet-manager/install.php`
+3. **Fill in** database credentials and admin password → Click **Install Now**
+4. **Delete** `install.php` and `generate_hash.php` after setup
+5. **Login** at `http://localhost/snippet-manager/login.php`
 
-3. **Configure database** (if needed): edit `config/database.php`
-
-4. **Delete install.php** after setup!
-
-5. **Login:**
-   ```
-   http://localhost/snippet-manager/login.php
-   ```
-
-### Manual Installation (Step-by-Step)
-
-If you prefer to set things up manually instead of using `install.php`, follow these steps carefully:
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | `admin` | `admin123` |
+| Member | `demo` | `demo123` |
 
 ---
 
-#### Step 1 — Create the Database
+### Method 2 — Manual Install (Import SQL & Play)
 
-Open **phpMyAdmin** (or MySQL CLI) and run:
+The `database.sql` file contains **everything** — tables, users, categories, tags, and sample snippets:
 
-```sql
-CREATE DATABASE snippet_manager CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
+| Included in database.sql | ✅ |
+|--------------------------|---|
+| 9 database tables | ✅ |
+| Admin user (`admin`) | ✅ |
+| Demo member user (`demo`) | ✅ |
+| 10 categories | ✅ |
+| 10 tags | ✅ |
+| 3 sample snippets with tags & versions | ✅ |
 
----
+#### Step 1 — Import database.sql
 
-#### Step 2 — Import Tables
-
-Import the `database.sql` file which creates all 9 tables:
-
-**Option A — phpMyAdmin:**
-1. Open phpMyAdmin → Click on `snippet_manager` database
-2. Go to **Import** tab
+**Using phpMyAdmin:**
+1. Open phpMyAdmin
+2. Click **Import** (top menu)
 3. Click **Choose File** → select `database.sql`
 4. Click **Go**
+5. Done — database, tables, and all data created ✅
 
-**Option B — Command line:**
+**Using command line:**
 ```bash
-mysql -u root -p snippet_manager < database.sql
+mysql -u root -p < database.sql
 ```
 
----
+#### Step 2 — Fix Password Hashes
 
-#### Step 3 — Generate a Password Hash
+The users are created but passwords need PHP to hash them. Pick **any one** option:
 
-This is important! MySQL cannot hash passwords using bcrypt. You must use PHP to generate the hash first.
+**Option A — Open `generate_hash.php` in browser (Easiest):**
+```
+http://localhost/snippet-manager/generate_hash.php
+```
+- It shows ready-to-run SQL with correct password hashes
+- Click **Copy SQL** button
+- Go to phpMyAdmin → `snippet_manager` database → **SQL** tab → Paste → **Go**
+- Delete `generate_hash.php` after ✅
 
-**Option A — Run this in your terminal:**
+**Option B — Open `install.php` in browser:**
+```
+http://localhost/snippet-manager/install.php
+```
+- It detects existing users and automatically fixes their password hashes
+- Delete `install.php` after ✅
+
+**Option C — PHP command line:**
 ```bash
-php -r "echo password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);"
+php -r "echo 'admin123: ' . password_hash('admin123', PASSWORD_BCRYPT, ['cost'=>12]) . PHP_EOL;"
+php -r "echo 'demo123: ' . password_hash('demo123', PASSWORD_BCRYPT, ['cost'=>12]) . PHP_EOL;"
+```
+Copy the output hashes and run in phpMyAdmin:
+```sql
+UPDATE users SET password = 'PASTE_ADMIN_HASH' WHERE username = 'admin';
+UPDATE users SET password = 'PASTE_DEMO_HASH' WHERE username = 'demo';
 ```
 
-**Option B — Create a temporary PHP file** called `hash.php`:
+> **Why this step?** MySQL cannot generate bcrypt hashes. PHP must do it. Every bcrypt hash is unique — even for the same password — so it must be generated fresh on your server.
+
+#### Step 3 — Configure
+
+Edit `config/database.php` with your MySQL credentials:
 ```php
-<?php
-// Open this file in browser to see the hash
-echo password_hash('admin123', PASSWORD_BCRYPT, ['cost' => 12]);
-?>
-```
-Open `http://localhost/hash.php` in your browser → copy the entire output.
-
-The output will look something like this (yours will be different):
-```
-$2y$12$LJ3m4ks9Fnh.VgO1hR8pMeXz7QZy5YvrKBwUn0cEQ7gTJpGXa6Yfa
+'host'     => 'localhost',
+'dbname'   => 'snippet_manager',
+'username' => 'root',
+'password' => '',
 ```
 
-> ⚠️ **Delete `hash.php` after use!** Never leave it on your server.
-
----
-
-#### Step 4 — Create Admin User
-
-Run this SQL in phpMyAdmin (SQL tab) — **replace the hash** with the one you generated above:
-
-```sql
-INSERT INTO users (username, email, password, full_name, role) VALUES (
-    'admin',
-    'admin@example.com',
-    '$2y$12$PASTE_YOUR_HASH_FROM_STEP_3_HERE',
-    'Administrator',
-    'admin'
-);
-```
-
-**Example with a real hash:**
-```sql
-INSERT INTO users (username, email, password, full_name, role) VALUES (
-    'admin',
-    'admin@example.com',
-    '$2y$12$LJ3m4ks9Fnh.VgO1hR8pMeXz7QZy5YvrKBwUn0cEQ7gTJpGXa6Yfa',
-    'Administrator',
-    'admin'
-);
-```
-
-> The `password` column stores the **bcrypt hash**, not the plain text password. You will login using the plain text password (`admin123` in this example).
-
----
-
-#### Step 5 — (Optional) Create a Demo Member User
-
-To test the member role, create a second user. Generate a hash for `member123` the same way as Step 3, then:
-
-```sql
-INSERT INTO users (username, email, password, full_name, role) VALUES (
-    'demo',
-    'demo@example.com',
-    '$2y$12$PASTE_HASH_FOR_member123_HERE',
-    'Demo User',
-    'member'
-);
-```
-
----
-
-#### Step 6 — Insert Default Categories
-
-```sql
-INSERT INTO categories (name, slug, description, color, sort_order, created_by) VALUES
-('Database', 'database', 'MySQL, PDO, and database-related snippets', '#ef4444', 1, 1),
-('Authentication', 'authentication', 'Login, registration, and auth snippets', '#f97316', 2, 1),
-('File Handling', 'file-handling', 'File upload, download, and manipulation', '#eab308', 3, 1),
-('API', 'api', 'REST API and cURL related snippets', '#22c55e', 4, 1),
-('String Manipulation', 'string-manipulation', 'String processing and formatting', '#3b82f6', 5, 1),
-('Array Operations', 'array-operations', 'Array sorting, filtering, and manipulation', '#8b5cf6', 6, 1),
-('Email', 'email', 'Email sending and template snippets', '#ec4899', 7, 1),
-('Security', 'security', 'Encryption, sanitization, and security', '#14b8a6', 8, 1),
-('Utilities', 'utilities', 'Helper functions and utilities', '#6366f1', 9, 1),
-('OOP Patterns', 'oop-patterns', 'Design patterns and OOP concepts', '#a855f7', 10, 1);
-```
-
----
-
-#### Step 7 — Insert Default Tags
-
-```sql
-INSERT INTO tags (name, slug, color) VALUES
-('php', 'php', '#777BB4'),
-('mysql', 'mysql', '#4479A1'),
-('pdo', 'pdo', '#336791'),
-('security', 'security', '#DC2626'),
-('helper', 'helper', '#059669'),
-('crud', 'crud', '#D97706'),
-('ajax', 'ajax', '#2563EB'),
-('oop', 'oop', '#7C3AED'),
-('api', 'api', '#0891B2'),
-('validation', 'validation', '#E11D48');
-```
-
----
-
-#### Step 8 — Configure the Application
-
-**Edit `config/database.php`** — update these values to match your setup:
+Edit `config/app.php` for your timezone:
 ```php
-'host'     => 'localhost',        // your database host
-'port'     => 3306,               // your database port
-'dbname'   => 'snippet_manager',  // database name from Step 1
-'username' => 'root',             // your MySQL username
-'password' => '',                 // your MySQL password
+define('APP_TIMEZONE', 'Asia/Kolkata');
 ```
 
-**Edit `config/app.php`** — set your timezone:
-```php
-define('APP_TIMEZONE', 'Asia/Kolkata');  // Change to your timezone
-```
-Full list of timezones: [php.net/timezones](https://www.php.net/manual/en/timezones.php)
+#### Step 4 — Create uploads folder
 
----
+Create an `uploads` folder inside `snippet-manager/`. On Windows just right-click → New Folder.
 
-#### Step 9 — Create Uploads Directory
+#### Step 5 — Login
 
-```bash
-mkdir uploads
-chmod 755 uploads
-```
-
-On Windows (XAMPP), just create an `uploads` folder inside `snippet-manager/`.
-
----
-
-#### Step 10 — Login and Start Using
-
-Open your browser:
 ```
 http://localhost/snippet-manager/login.php
 ```
 
 | Role | Username | Password |
 |------|----------|----------|
-| Admin | `admin` | `admin123` (or whatever you set in Step 3) |
-| Member | `demo` | `member123` (if you did Step 5) |
+| Admin | `admin` | `admin123` |
+| Member | `demo` | `demo123` |
+
+#### Step 6 — Clean up
+
+Delete these files after successful login:
+- `install.php`
+- `generate_hash.php`
 
 ---
 
-> 💡 **Tip:** The web installer (`install.php`) does all of Steps 1–9 automatically with a simple GUI form. Manual installation is recommended only if you need full control or your hosting restricts browser-based setup.
-
-### Going to Production
+### Going Live
 
 1. Set `APP_DEBUG` to `false` in `config/app.php`
-2. Set `APP_TIMEZONE` to your timezone in `config/app.php`
+2. Set `APP_TIMEZONE` to your timezone
 3. Update database credentials in `config/database.php`
-4. Delete `install.php`
+4. Delete `install.php` and `generate_hash.php`
 5. Ensure `uploads/` has write permissions (755)
-6. Enable HTTPS and update `.htaccess` accordingly
-7. Change default admin password
+6. Enable HTTPS
+7. Change default passwords
 
 ---
 
@@ -374,44 +247,27 @@ http://localhost/snippet-manager/login.php
 
 All requests go through `ajax/handler.php?action=<action>`.
 
-### Snippets
 | Action | Method | Description |
 |--------|--------|-------------|
 | `create_snippet` | POST | Create new snippet |
-| `update_snippet` | POST | Update existing snippet |
+| `update_snippet` | POST | Update snippet |
 | `delete_snippet` | POST | Delete snippet |
 | `quick_search` | GET | Autocomplete search |
 | `copy_snippet` | POST | Track copy action |
 | `toggle_pin` | POST | Pin/unpin snippet |
 | `clone_snippet` | POST | Fork shared snippet |
-
-### Favorites & Sharing
-| Action | Method | Description |
-|--------|--------|-------------|
 | `toggle_favorite` | POST | Toggle bookmark |
 | `share_snippet` | POST | Share with user |
 | `remove_share` | POST | Remove share link |
 | `search_users` | GET | Find users to share with |
-
-### Categories & Tags
-| Action | Method | Description |
-|--------|--------|-------------|
-| `create_category` | POST | Create category (duplicate check) |
-| `create_tag` | POST | Create tag (duplicate check) |
+| `create_category` | POST | Create category |
+| `create_tag` | POST | Create tag |
 | `update_tag` | POST | Edit tag |
 | `delete_tag` | POST | Remove tag |
-
-### Admin (admin role required)
-| Action | Method | Description |
-|--------|--------|-------------|
-| `admin_toggle_role` | POST | Change user role |
-| `admin_toggle_status` | POST | Activate/deactivate user |
-
-### Versions
-| Action | Method | Description |
-|--------|--------|-------------|
 | `get_versions` | GET | Version history |
 | `restore_version` | POST | Restore old version |
+| `admin_toggle_role` | POST | Change user role (admin only) |
+| `admin_toggle_status` | POST | Activate/deactivate user (admin only) |
 
 ---
 

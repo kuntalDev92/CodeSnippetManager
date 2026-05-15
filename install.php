@@ -324,14 +324,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $messages[] = ['success', '✅ 3 sample snippets with tags inserted.'];
         }
 
-        // Step 8: Create a demo member user (password: member123)
+        // Step 8: Create or fix demo member user (password: demo123)
+        $memberHash = password_hash('demo123', PASSWORD_BCRYPT, ['cost' => 12]);
         $memberCheck = $pdo->prepare("SELECT id FROM users WHERE username = 'demo'");
         $memberCheck->execute();
-        if (!$memberCheck->fetch()) {
-            $memberHash = password_hash('member123', PASSWORD_BCRYPT, ['cost' => 12]);
+        if ($memberCheck->fetch()) {
+            // User exists (from database.sql import) — fix the password hash
+            $pdo->prepare("UPDATE users SET password = ? WHERE username = 'demo'")
+                ->execute([$memberHash]);
+            $messages[] = ['success', '✅ Demo member password hash updated (demo / demo123).'];
+        } else {
+            // Create fresh
             $pdo->prepare("INSERT INTO users (username, email, password, full_name, role) VALUES (?, ?, ?, ?, 'member')")
                 ->execute(['demo', 'demo@snippetmanager.com', $memberHash, 'Demo User']);
-            $messages[] = ['success', '✅ Demo member user created (demo / member123).'];
+            $messages[] = ['success', '✅ Demo member user created (demo / demo123).'];
         }
 
         // Step 9: Create uploads directory
@@ -413,7 +419,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <tr>
                                         <td><span class="badge bg-secondary">Member</span></td>
                                         <td><code>demo</code></td>
-                                        <td><code>member123</code></td>
+                                        <td><code>demo123</code></td>
                                     </tr>
                                 </tbody>
                             </table>
