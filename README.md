@@ -10,6 +10,19 @@ A modern, full-featured **Code Snippet Manager** designed for developers and tea
 
 ---
 
+## 📸 Screenshots
+
+### Login Page
+![Login Page](screenshots/login.png)
+
+### My Snippets
+![Snippets Listing](screenshots/snippets.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+---
+
 ## 🚀 Features
 
 ### Core Features
